@@ -1,6 +1,7 @@
 package com.jobms.controller;
 
 import com.jobms.domain.Job;
+import com.jobms.dto.JobWithCompanyDto;
 import com.jobms.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class Controller {
     private JobService jobService;
 
     @GetMapping
-    public ResponseEntity <List<Job>> findAll() {
+    public ResponseEntity <List<JobWithCompanyDto>> findAll() {
         return new ResponseEntity<>(jobService.findAll(), HttpStatus.OK) ;
     }
 
