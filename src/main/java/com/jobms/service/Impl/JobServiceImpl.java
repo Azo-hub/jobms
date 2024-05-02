@@ -26,18 +26,9 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<JobWithCompanyDto> findAll() {
         List<Job> jobs = jobRepository.findAll();
-        List<JobWithCompanyDto> jobWithCompanyDtos = new ArrayList<>();
-
-        jobs.stream().forEach(job -> {
-
-            Company company = restTemplate.getForObject("http://COMPANYMS:8081/companies/"+job.getCompanyId(), Company.class);
-            JobWithCompanyDto jobWithCompanyDto = new JobWithCompanyDto();
-            jobWithCompanyDto.setJob(job);
-            jobWithCompanyDto.setCompany(company);
-            jobWithCompanyDtos.add(jobWithCompanyDto);
-        });
-        return jobWithCompanyDtos;
+        return convertJobs(jobs);
     }
+
 
     @Override
     public void createJob(Job job) {
@@ -77,4 +68,36 @@ public class JobServiceImpl implements JobService {
         return dbJob.orElse(null);
 
     }
+
+
+    private List<JobWithCompanyDto> convertJobs(List<Job> jobs) {
+        List<JobWithCompanyDto> jobWithCompanyDtos = new ArrayList<>();
+
+        jobs.forEach(job -> {
+            jobWithCompanyDtos.add(convertJob(job));
+        });
+        return jobWithCompanyDtos;
+    }
+
+    private JobWithCompanyDto convertJob(Job job) {
+        Company company = restTemplate.getForObject("http://COMPANYMS:8081/companies/"+job.getCompanyId(), Company.class);
+        JobWithCompanyDto jobWithCompanyDto = mapToJobWithCompanyDto(job);
+        jobWithCompanyDto.setCompany(company);
+
+        return jobWithCompanyDto;
+    }
+
+    private JobWithCompanyDto mapToJobWithCompanyDto(Job job) {
+        JobWithCompanyDto jobWithCompanyDto = new JobWithCompanyDto();
+        jobWithCompanyDto.setId(job.getId());
+        jobWithCompanyDto.setTitle(job.getTitle());
+        jobWithCompanyDto.setLocation(job.getLocation());
+        jobWithCompanyDto.setDescription(job.getDescription());
+        jobWithCompanyDto.setMinSalary(job.getMinSalary());
+        jobWithCompanyDto.setMaxSalary(job.getMaxSalary());
+
+        return jobWithCompanyDto;
+    }
+
+
 }
