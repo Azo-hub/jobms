@@ -11,7 +11,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/jobmsDB?serverTimezone=UTC
     name: jobmsDB
 
-    password: *************
+    password: Pureand@applied1
     username: postgres
 
   jpa:
